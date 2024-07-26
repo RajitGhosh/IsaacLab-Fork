@@ -79,7 +79,7 @@ def main():
         video_kwargs = {
             "video_folder": os.path.join(os.path.dirname(resume_path), "videos", "playback"),
             "video_length": args_cli.video_length,
-            "name_prefix": "rsl_rl-" + args_cli.task + "-playing_video",
+            "name_prefix": "skrl-" + args_cli.task + "-" + agent_cfg.load_run + "-playing-video",
             "disable_logger": True,
         }
         print("[INFO] Recording video of agent playing.")
