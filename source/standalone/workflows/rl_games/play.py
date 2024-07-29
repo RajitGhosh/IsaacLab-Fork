@@ -14,6 +14,8 @@ from omni.isaac.lab.app import AppLauncher
 # add argparse arguments
 parser = argparse.ArgumentParser(description="Play a checkpoint of an RL agent from RL-Games.")
 parser.add_argument("--cpu", action="store_true", default=False, help="Use CPU pipeline.")
+parser.add_argument("--disable_video", action="store_true", default=False, help="Don't record videos during playback.")
+parser.add_argument("--video_length", type=int, default=400, help="Length of the recorded video (in steps).")
 parser.add_argument(
     "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
 )
@@ -29,6 +31,9 @@ parser.add_argument(
 AppLauncher.add_app_launcher_args(parser)
 # parse the arguments
 args_cli = parser.parse_args()
+
+if not args_cli.disable_video:
+    args_cli.enable_cameras = True
 
 # launch omniverse app
 app_launcher = AppLauncher(args_cli)
@@ -66,22 +71,10 @@ def main():
     clip_obs = agent_cfg["params"]["env"].get("clip_observations", math.inf)
     clip_actions = agent_cfg["params"]["env"].get("clip_actions", math.inf)
 
-    # create isaac environment
-    env = gym.make(args_cli.task, cfg=env_cfg)
-    # wrap around environment for rl-games
-    env = RlGamesVecEnvWrapper(env, rl_device, clip_obs, clip_actions)
-
-    # register the environment to rl-games registry
-    # note: in agents configuration: environment name must be "rlgpu"
-    vecenv.register(
-        "IsaacRlgWrapper", lambda config_name, num_actors, **kwargs: RlGamesGpuEnv(config_name, num_actors, **kwargs)
-    )
-    env_configurations.register("rlgpu", {"vecenv_type": "IsaacRlgWrapper", "env_creator": lambda **kwargs: env})
-
     # specify directory for logging experiments
     log_root_path = os.path.join("logs", "rl_games", agent_cfg["params"]["config"]["name"])
     log_root_path = os.path.abspath(log_root_path)
-    print(f"[INFO] Loading experiment from directory: {log_root_path}")
+
     # find checkpoint
     if args_cli.checkpoint is None:
         # specify directory for logging runs
@@ -96,6 +89,33 @@ def main():
         resume_path = get_checkpoint_path(log_root_path, run_dir, checkpoint_file, other_dirs=["nn"])
     else:
         resume_path = retrieve_file_path(args_cli.checkpoint)
+    # create isaac environment
+    env = gym.make(args_cli.task, cfg=env_cfg, render_mode="rgb_array" if not args_cli.disable_video else None)
+
+    # enable video
+    if not args_cli.disable_video:
+        video_kwargs = {
+            "video_folder": os.path.join(os.path.dirname(resume_path), "videos", "playback"),
+            "video_length": args_cli.video_length,
+            "name_prefix": "rl_games-" + agent_cfg["params"]["config"]["name"] + "-playing-video",
+            "disable_logger": True,
+        }
+        print("[INFO] Recording video of agent playing.")
+        env = gym.wrappers.RecordVideo(env, **video_kwargs)
+
+
+    # wrap around environment for rl-games
+    env = RlGamesVecEnvWrapper(env, rl_device, clip_obs, clip_actions)
+
+    # register the environment to rl-games registry
+    # note: in agents configuration: environment name must be "rlgpu"
+    vecenv.register(
+        "IsaacRlgWrapper", lambda config_name, num_actors, **kwargs: RlGamesGpuEnv(config_name, num_actors, **kwargs)
+    )
+    env_configurations.register("rlgpu", {"vecenv_type": "IsaacRlgWrapper", "env_creator": lambda **kwargs: env})
+
+    print(f"[INFO] Loading experiment from directory: {log_root_path}")
+    
     # load previously trained model
     agent_cfg["params"]["load_checkpoint"] = True
     agent_cfg["params"]["load_path"] = resume_path
