@@ -95,7 +95,8 @@ def main():
     # enable video
     if not args_cli.disable_video:
         video_kwargs = {
-            "video_folder": os.path.join(os.path.dirname(resume_path), "videos", "playback"),
+            "video_folder": os.path.join(os.path.dirname(os.path.dirname(resume_path)), "videos", "playback"),
+            "episode_trigger": lambda episode: episode == 0,
             "video_length": args_cli.video_length,
             "name_prefix": "rl_games-" + agent_cfg["params"]["config"]["name"] + "-playing-video",
             "disable_logger": True,
