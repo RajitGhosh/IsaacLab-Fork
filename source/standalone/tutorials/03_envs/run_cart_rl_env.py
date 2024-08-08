@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-"""This script demonstrates how to run the RL environment for the cartpole balancing task."""
+"""This script demonstrates how to run the RL environment for the cart task."""
 
 """Launch Isaac Sim Simulator first."""
 
@@ -12,7 +12,7 @@ import argparse
 from omni.isaac.lab.app import AppLauncher
 
 # add argparse arguments
-parser = argparse.ArgumentParser(description="Tutorial on running the cartpole RL environment.")
+parser = argparse.ArgumentParser(description="Tutorial on running the cart RL environment.")
 parser.add_argument("--num_envs", type=int, default=16, help="Number of environments to spawn.")
 
 # append AppLauncher cli args
@@ -30,13 +30,13 @@ import torch
 
 from omni.isaac.lab.envs import ManagerBasedRLEnv
 
-from omni.isaac.lab_tasks.manager_based.classic.cartpole.cartpole_env_cfg import CartpoleEnvCfg
+from omni.isaac.lab_tasks.manager_based.custom.cart.cart_env_cfg import CartEnvCfg
 
 
 def main():
     """Main function."""
     # create environment configuration
-    env_cfg = CartpoleEnvCfg()
+    env_cfg = CartEnvCfg()
     env_cfg.scene.num_envs = args_cli.num_envs
     # setup RL environment
     env = ManagerBasedRLEnv(cfg=env_cfg)
