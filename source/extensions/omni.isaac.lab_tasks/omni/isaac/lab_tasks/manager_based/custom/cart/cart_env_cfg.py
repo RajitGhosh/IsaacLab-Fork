@@ -3,8 +3,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import math
-
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import ArticulationCfg, AssetBaseCfg
 from omni.isaac.lab.envs import ManagerBasedRLEnvCfg
@@ -12,7 +10,6 @@ from omni.isaac.lab.managers import EventTermCfg as EventTerm
 from omni.isaac.lab.managers import ObservationGroupCfg as ObsGroup
 from omni.isaac.lab.managers import ObservationTermCfg as ObsTerm
 from omni.isaac.lab.managers import RewardTermCfg as RewTerm
-from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.managers import TerminationTermCfg as DoneTerm
 from omni.isaac.lab.terrains import TerrainImporterCfg
 from omni.isaac.lab.scene import InteractiveSceneCfg
@@ -26,15 +23,10 @@ import omni.isaac.lab_tasks.manager_based.classic.humanoid.mdp as mdp
 from omni.isaac.lab_assets.cart import CART_CFG  # isort:skip
 
 
-##
-# Scene definition
-##
-
-
 @configclass
 class CartSceneCfg(InteractiveSceneCfg):
     """Configuration for a cart scene."""
-
+    
     # ground terrain
     terrain = TerrainImporterCfg(
         prim_path="/World/ground",
@@ -133,11 +125,11 @@ class RewardsCfg:
     """Reward terms for the MDP."""
 
     # (1) Reward for moving forward
-    progress = RewTerm(func=mdp.progress_reward, weight=1.0, params={"target_pos": (1000.0, 0.0, 0.0)})
+    progress = RewTerm(func=mdp.progress_reward, weight=1.0, params={"target_pos": (100.0, 0.0, 0.0)})
 
     # (2) Reward for moving in the right direction
     move_to_target = RewTerm(
-        func=mdp.move_to_target_bonus, weight=0.5, params={"threshold": 0.8, "target_pos": (1000.0, 0.0, 0.0)}
+        func=mdp.move_to_target_bonus, weight=0.5, params={"threshold": 0.8, "target_pos": (100.0, 0.0, 0.0)}
     )
 
      # (3) Penalty for energy consumption
