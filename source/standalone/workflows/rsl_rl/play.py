@@ -47,6 +47,7 @@ import torch
 from rsl_rl.runners import OnPolicyRunner
 
 import omni.isaac.lab_tasks  # noqa: F401
+from omni.isaac.lab_tasks.manager_based.custom import *
 from omni.isaac.lab_tasks.utils import get_checkpoint_path, parse_env_cfg
 from omni.isaac.lab_tasks.utils.wrappers.rsl_rl import (
     RslRlOnPolicyRunnerCfg,
