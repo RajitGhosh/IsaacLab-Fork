@@ -74,7 +74,7 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP."""
 
-    joint_effort = mdp.JointEffortActionCfg(asset_name="robot", joint_names=[".*"], scale=10.0)
+    joint_effort = mdp.JointEffortActionCfg(asset_name="robot", joint_names=[".*"], scale=50.0)
 
 
 @configclass
