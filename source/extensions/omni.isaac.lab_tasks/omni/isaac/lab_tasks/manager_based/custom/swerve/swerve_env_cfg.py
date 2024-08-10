@@ -20,7 +20,7 @@ import omni.isaac.lab_tasks.manager_based.classic.humanoid.mdp as mdp
 ##
 # Pre-defined configs
 ##
-from omni.isaac.lab_assets.Swerve import SWERVE_CFG  # isort:skip
+from omni.isaac.lab_assets.swerve import SWERVE_CFG  # isort:skip
 
 
 @configclass

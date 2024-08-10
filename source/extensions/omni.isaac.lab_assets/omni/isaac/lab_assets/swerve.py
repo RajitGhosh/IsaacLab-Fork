@@ -28,12 +28,19 @@ SWERVE_CFG = ArticulationCfg(
         pos=(0.0, 0.0, 0.5), joint_pos={".*": 0.0},
     ),
     actuators={
-        "all_joints": ImplicitActuatorCfg(
-            joint_names_expr=[".*"],
-            effort_limit=400.0,
-            velocity_limit=100.0,
-            stiffness=0.0,
-            damping=0.0,
+        "drive": ImplicitActuatorCfg(
+        joint_names_expr=["wheel1_drive", "wheel2_drive", "wheel3_drive", "wheel4_drive"],
+        effort_limit=400.0,
+        velocity_limit=100.0,
+        stiffness=0.0,
+        damping=10.0,
+        ),
+        "steer": ImplicitActuatorCfg(
+        joint_names_expr=["wheel1_steer", "wheel2_steer", "wheel3_steer", "wheel4_steer"],
+        effort_limit=40.0,
+        velocity_limit=10.0,
+        stiffness=0.0,
+        damping=10.0,
         ),
     },
 )

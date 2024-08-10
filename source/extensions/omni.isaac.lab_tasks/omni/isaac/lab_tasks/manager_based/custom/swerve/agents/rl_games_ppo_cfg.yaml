@@ -39,7 +39,7 @@ params:
   load_path: '' # path to the checkpoint to load
 
   config:
-    name: cart
+    name: swerve
     env_name: rlgpu
     device: 'cuda:0'
     device_name: 'cuda:0'
@@ -55,7 +55,7 @@ params:
     normalize_advantage: True
     gamma: 0.99
     tau: 0.95
-    learning_rate: 2e-4
+    learning_rate: 7e-4
     lr_schedule: adaptive
     schedule_type: legacy
     kl_threshold: 0.008
